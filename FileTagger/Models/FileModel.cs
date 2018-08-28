@@ -27,6 +27,20 @@ namespace FileTagger.Models
             }
         }
 
+        private int _SelectedIndex;
+        [XmlIgnore]
+        public int SelectedIndex
+        {
+            get
+            {
+                return _SelectedIndex;
+            }
+            set
+            {
+                SetProperty(ref _SelectedIndex, value);
+            }
+        }
+
         public FileModel()
         {
             Items = new ObservableCollection<FileItem>();

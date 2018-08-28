@@ -15,7 +15,8 @@ namespace FileTagger.ViewModels
 {
     public class MainViewModel : BindableBase
     {
-        private readonly string xmlPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "//FileTaggerData.xml";
+        private readonly string _XmlPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "//FileTaggerData.xml";
+
         private FileModel _FileModel;
         public FileModel FileModel
         {
@@ -30,19 +31,20 @@ namespace FileTagger.ViewModels
         }
 
         public DelegateCommand AddFileCommand { get; set; }
+        public DelegateCommand DeleteFileCommand { get; set; }
 
         public MainViewModel()
         {            
             AddFileCommand = new DelegateCommand(AddFile);
-
+            DeleteFileCommand = new DelegateCommand(DeleteFile);
             LoadData();
         }
 
         private void LoadData()
         {
-            if (File.Exists(xmlPath))
+            if (File.Exists(_XmlPath))
             {
-                using (FileStream fs = new FileStream(xmlPath, FileMode.Open))
+                using (FileStream fs = new FileStream(_XmlPath, FileMode.Open))
                 {
                     using (XmlReader reader = XmlReader.Create(fs))
                     {
@@ -57,23 +59,46 @@ namespace FileTagger.ViewModels
             }
         }
 
-        public void AddFile()
+        private void AddFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
-            {              
-                Models.FileItem file = new Models.FileItem();
+            {
+                FileItem file = new FileItem();
                 file.FIleName = openFileDialog.FileName;
                 file.SafeFileName = openFileDialog.SafeFileName;
 
                 FileModel.Items.Add(file);
+                WriteXml();
+            }
+        }
 
-                XmlSerializer writer = new XmlSerializer(typeof(FileModel));
-                using (FileStream fs = File.Create(xmlPath))
+        private void DeleteFile()
+        {
+            int index = FileModel.SelectedIndex;
+            if(index > -1)
+            {
+                FileModel.Items.RemoveAt(index);
+                WriteXml();
+
+                if(index > 0)
                 {
-                    writer.Serialize(fs, FileModel);
+                    FileModel.SelectedIndex = index - 1;
                 }
-            }             
+                else if(index == 0 && FileModel.Items.Count > 0)
+                {
+                    FileModel.SelectedIndex = 0;
+                }
+            }
+        }
+
+        private void WriteXml()
+        {
+            XmlSerializer writer = new XmlSerializer(typeof(FileModel));
+            using (FileStream fs = File.Create(_XmlPath))
+            {
+                writer.Serialize(fs, FileModel);
+            }
         }
     }
 }

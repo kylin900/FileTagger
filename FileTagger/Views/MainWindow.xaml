@@ -28,11 +28,15 @@
             </Grid.ColumnDefinitions>
             <StackPanel Orientation="Horizontal">
                 <Button Width="75" Content="파일 추가" Command="{Binding AddFileCommand}"/>
-                <Button Width="75" Content="삭제"/>
+                <Button Width="75" Content="삭제" Command="{Binding DeleteFileCommand}"/>
             </StackPanel>
             <TextBox Grid.Row="1"/>
             <Button Grid.Row="1" Grid.Column="1" Content="검색"/>
-            <ListBox Grid.Row="2" Grid.ColumnSpan="2" ItemsSource="{Binding FileModel.Items, Mode=TwoWay}" DisplayMemberPath="SafeFileName"/>
+            <ListBox Grid.Row="2" 
+                     Grid.ColumnSpan="2" 
+                     DisplayMemberPath="SafeFileName"
+                     ItemsSource="{Binding FileModel.Items, Mode=TwoWay}" 
+                     SelectedIndex="{Binding FileModel.SelectedIndex, Mode=TwoWay}"/>
         </Grid>
         <Grid Grid.Column="1">
 
