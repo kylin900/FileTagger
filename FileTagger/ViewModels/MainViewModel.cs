@@ -8,6 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -64,12 +65,20 @@ namespace FileTagger.ViewModels
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
             {
-                FileItem file = new FileItem();
-                file.FIleName = openFileDialog.FileName;
-                file.SafeFileName = openFileDialog.SafeFileName;
+                int count = FileModel.Items.Count(x => x.FIleName == openFileDialog.FileName);
+                if(count == 0)
+                {
+                    FileItem file = new FileItem();
+                    file.FIleName = openFileDialog.FileName;
+                    file.SafeFileName = openFileDialog.SafeFileName;
 
-                FileModel.Items.Add(file);
-                WriteXml();
+                    FileModel.Items.Add(file);
+                    WriteXml();
+                }
+                else
+                {
+                    MessageBox.Show("이미 등록된 파일입니다.");
+                }
             }
         }
 
