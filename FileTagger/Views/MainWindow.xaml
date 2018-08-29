@@ -35,7 +35,7 @@
             <ListBox Grid.Row="2" 
                      Grid.ColumnSpan="2" 
                      DisplayMemberPath="SafeFileName"
-                     ItemsSource="{Binding FileModel.Items, Mode=TwoWay}" 
+                     ItemsSource="{Binding FileModel.DisplayItems, Mode=TwoWay}" 
                      SelectedIndex="{Binding FileModel.SelectedIndex, Mode=TwoWay}"/>
         </Grid>
         <Grid Grid.Column="1">

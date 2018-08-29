@@ -63,22 +63,30 @@ namespace FileTagger.ViewModels
         private void AddFile()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Multiselect = true;
+            openFileDialog.Title = "파일 추가";
+
             if (openFileDialog.ShowDialog() == true)
             {
-                int count = FileModel.Items.Count(x => x.FIleName == openFileDialog.FileName);
-                if(count == 0)
+                for(int i = 0; i < openFileDialog.FileNames.Count(); i++ )
                 {
-                    FileItem file = new FileItem();
-                    file.FIleName = openFileDialog.FileName;
-                    file.SafeFileName = openFileDialog.SafeFileName;
-
-                    FileModel.Items.Add(file);
-                    WriteXml();
+                    int count = FileModel.AllItems.Count(x => x.FIleName == openFileDialog.FileNames[i]);
+                    if(count > 0)
+                    {
+                        MessageBox.Show("이미 등록된 파일입니다.");
+                        return;
+                    }
                 }
-                else
+                for(int i = 0; i< openFileDialog.FileNames.Count(); i++)
                 {
-                    MessageBox.Show("이미 등록된 파일입니다.");
+                    FileItem file = new FileItem
+                    {
+                        FIleName = openFileDialog.FileNames[i],
+                        SafeFileName = openFileDialog.SafeFileNames[i]
+                    };
+                    FileModel.AllItems.Add(file);
                 }
+                WriteXml();
             }
         }
 
@@ -87,14 +95,14 @@ namespace FileTagger.ViewModels
             int index = FileModel.SelectedIndex;
             if(index > -1)
             {
-                FileModel.Items.RemoveAt(index);
+                FileModel.AllItems.RemoveAt(index);
                 WriteXml();
 
                 if(index > 0)
                 {
                     FileModel.SelectedIndex = index - 1;
                 }
-                else if(index == 0 && FileModel.Items.Count > 0)
+                else if(index == 0 && FileModel.AllItems.Count > 0)
                 {
                     FileModel.SelectedIndex = 0;
                 }

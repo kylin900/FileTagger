@@ -12,18 +12,31 @@ namespace FileTagger.Models
  
     public class FileModel : BindableBase
     {
-        private ObservableCollection<FileItem> _Items;
-
+        private ObservableCollection<FileItem> _AllItems;
         [XmlElement("FileItem")]
-        public ObservableCollection<FileItem> Items
+        public ObservableCollection<FileItem> AllItems
         {
             get
             {
-                return _Items;
+                return _AllItems;
             }
             set
             {
-                SetProperty(ref _Items, value);
+                SetProperty(ref _AllItems, value);
+            }
+        }
+
+        private ObservableCollection<FileItem> _DisplayItems;
+        [XmlIgnore]
+        public ObservableCollection<FileItem> DisplayItems
+        {
+            get
+            {
+                return _DisplayItems;
+            }
+            set
+            {
+                SetProperty(ref _DisplayItems, value);
             }
         }
 
@@ -43,7 +56,8 @@ namespace FileTagger.Models
 
         public FileModel()
         {
-            Items = new ObservableCollection<FileItem>();
+            AllItems = new ObservableCollection<FileItem>();
+            DisplayItems = AllItems;
         }
     }
 }
