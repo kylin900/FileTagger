@@ -12,6 +12,7 @@ namespace FileTagger.Models
     {
         public string FIleName { get; set; }
         public string SafeFileName { get; set; }
+        [XmlIgnore]
         public BitmapSource Icon { get; set; }
     }
 }
