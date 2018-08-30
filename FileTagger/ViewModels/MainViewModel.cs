@@ -63,13 +63,7 @@ namespace FileTagger.ViewModels
 
             foreach (var fileItem in FileModel.AllItems)
             {
-                Icon icon = Icon.ExtractAssociatedIcon(fileItem.FIleName);
-                BitmapSource bitmap = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
-                            icon.Handle,
-                            Int32Rect.Empty,
-                            BitmapSizeOptions.FromEmptyOptions());
-                icon.Dispose();
-                fileItem.Icon = bitmap;
+                fileItem.Icon = CreateIcon(fileItem.FIleName);
             }
         }
 
@@ -94,13 +88,25 @@ namespace FileTagger.ViewModels
                 {
                     FileItem file = new FileItem
                     {
-                        FIleName = openFileDialog.FileNames[i],
-                        SafeFileName = openFileDialog.SafeFileNames[i]
+                        FIleName = openFileDialog.FileNames[i]
+                        ,SafeFileName = openFileDialog.SafeFileNames[i]
+                        ,Icon = CreateIcon(openFileDialog.FileNames[i])
                     };
                     FileModel.AllItems.Add(file);
                 }
                 WriteXml();
             }
+        }
+
+        private BitmapSource CreateIcon(string fileName)
+        {
+            Icon icon = Icon.ExtractAssociatedIcon(fileName);
+            BitmapSource bitmap = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                        icon.Handle,
+                        Int32Rect.Empty,
+                        BitmapSizeOptions.FromEmptyOptions());
+            icon.Dispose();
+            return bitmap;
         }
 
         private void DeleteFile()
