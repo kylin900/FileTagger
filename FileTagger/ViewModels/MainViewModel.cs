@@ -4,11 +4,13 @@ using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media.Imaging;
 using System.Xml;
 using System.Xml.Serialization;
 
@@ -57,6 +59,17 @@ namespace FileTagger.ViewModels
             else
             {
                 FileModel = new FileModel();
+            }
+
+            foreach (var fileItem in FileModel.AllItems)
+            {
+                Icon icon = Icon.ExtractAssociatedIcon(fileItem.FIleName);
+                BitmapSource bitmap = System.Windows.Interop.Imaging.CreateBitmapSourceFromHIcon(
+                            icon.Handle,
+                            Int32Rect.Empty,
+                            BitmapSizeOptions.FromEmptyOptions());
+                icon.Dispose();
+                fileItem.Icon = bitmap;
             }
         }
 

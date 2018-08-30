@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 using System.Xml.Serialization;
 
 namespace FileTagger.Models
@@ -11,5 +12,6 @@ namespace FileTagger.Models
     {
         public string FIleName { get; set; }
         public string SafeFileName { get; set; }
+        public BitmapSource Icon { get; set; }
     }
 }
