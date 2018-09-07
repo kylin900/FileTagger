@@ -54,6 +54,20 @@ namespace FileTagger.Models
             }
         }
 
+        private FileItem _SelectedItem;
+        [XmlIgnore]
+        public FileItem SelectedItem
+        {
+            get
+            {
+                return _SelectedItem;
+            }
+            set
+            {
+                SetProperty(ref _SelectedItem, value);
+            }
+        }
+
         public FileModel()
         {
             AllItems = new ObservableCollection<FileItem>();

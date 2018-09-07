@@ -14,5 +14,6 @@ namespace FileTagger.Models
         public string SafeFileName { get; set; }
         [XmlIgnore]
         public BitmapSource Icon { get; set; }
+        public string Description { get; set; }
     }
 }

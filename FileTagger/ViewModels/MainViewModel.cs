@@ -35,11 +35,13 @@ namespace FileTagger.ViewModels
 
         public DelegateCommand AddFileCommand { get; set; }
         public DelegateCommand DeleteFileCommand { get; set; }
+        public DelegateCommand<string> SaveCommand { get; set; }
 
         public MainViewModel()
         {            
             AddFileCommand = new DelegateCommand(AddFile);
             DeleteFileCommand = new DelegateCommand(DeleteFile);
+            SaveCommand = new DelegateCommand<string>(Save);
             LoadData();
         }
 
@@ -111,21 +113,18 @@ namespace FileTagger.ViewModels
 
         private void DeleteFile()
         {
-            int index = FileModel.SelectedIndex;
-            if(index > -1)
+            FileItem item = FileModel.SelectedItem;
+            if(item != null)
             {
-                FileModel.AllItems.RemoveAt(index);
+                FileModel.AllItems.Remove(item);
                 WriteXml();
-
-                if(index > 0)
-                {
-                    FileModel.SelectedIndex = index - 1;
-                }
-                else if(index == 0 && FileModel.AllItems.Count > 0)
-                {
-                    FileModel.SelectedIndex = 0;
-                }
             }
+        }
+
+        private void Save(string text)
+        {
+            FileModel.SelectedItem.Description = text;
+            WriteXml();
         }
 
         private void WriteXml()
