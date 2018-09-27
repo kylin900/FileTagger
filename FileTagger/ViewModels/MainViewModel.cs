@@ -119,8 +119,11 @@ namespace FileTagger.ViewModels
             FileItem item = FileModel.SelectedItem;
             if(item != null)
             {
-                FileModel.AllItems.Remove(item);
-                WriteXml();
+                if (MessageBox.Show("파일을 삭제하시겠습니까?", "파일 제거", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+                {
+                    FileModel.AllItems.Remove(item);
+                    WriteXml();
+                }               
             }
         }
 
