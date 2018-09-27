@@ -23,6 +23,7 @@
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Button Width="75" Content="파일 추가" Command="{Binding AddFileCommand}"/>
             <Button Width="75" Content="삭제" Command="{Binding DeleteFileCommand}"/>
+            <Button Width="75" Content="실행" Command="{Binding ExecuteCommand}"/>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
