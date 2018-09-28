@@ -40,8 +40,19 @@
                     <ColumnDefinition Width="75"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBox Grid.Row="0"/>
-                <Button Grid.Row="0" Grid.Column="1" Content="검색"/>
+                <TextBox x:Name="Keywords"
+                         Grid.Row="0">
+                        <TextBox.InputBindings>
+                        <KeyBinding Key="Return" 
+                                    Command="{Binding SearchCommand}"
+                                    CommandParameter="{Binding ElementName=Keywords, Path=Text}" />
+                        </TextBox.InputBindings>
+                </TextBox>
+                <Button Grid.Row="0" 
+                        Grid.Column="1" 
+                        Content="검색" 
+                        Command="{Binding SearchCommand}"
+                        CommandParameter="{Binding ElementName=Keywords, Path=Text}"/>
                 <ListBox 
                     Grid.Row="2" 
                     Grid.ColumnSpan="2" 
@@ -70,9 +81,8 @@
                 <Button 
                         Width="75" 
                         Content="저장" 
-                        HorizontalAlignment="Left"
-                        Command="{Binding SaveCommand}"
-                        Margin="321,0,0,0">
+                        HorizontalAlignment="Right"
+                        Command="{Binding SaveCommand}" Margin="0,0,5,0">
                         <Button.CommandParameter>
                             <MultiBinding Converter="{StaticResource FileDataConverter}">
                                 <Binding ElementName="Tag" Path="Text" Mode="OneWay "/>

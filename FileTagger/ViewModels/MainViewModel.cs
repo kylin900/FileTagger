@@ -4,6 +4,7 @@ using Prism.Commands;
 using Prism.Mvvm;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -38,6 +39,7 @@ namespace FileTagger.ViewModels
         public DelegateCommand DeleteFileCommand { get; set; }
         public DelegateCommand ExecuteCommand { get; set; }
         public DelegateCommand<object> SaveCommand { get; set; }
+        public DelegateCommand<string> SearchCommand { get; set; }
 
         public MainViewModel()
         {            
@@ -45,6 +47,7 @@ namespace FileTagger.ViewModels
             DeleteFileCommand = new DelegateCommand(DeleteFile);
             ExecuteCommand = new DelegateCommand(Execute);
             SaveCommand = new DelegateCommand<object>(Save);
+            SearchCommand = new DelegateCommand<string>(Search);
             LoadData();
         }
 
@@ -136,6 +139,23 @@ namespace FileTagger.ViewModels
                     Process.Start(FileModel.SelectedItem.FIleName);
                 }
             }           
+        }
+
+        private void Search(string text)
+        {
+            if(!string.IsNullOrEmpty(text))
+            {
+                string[] tags = text.Trim().Split(' ');
+                var items = FileModel.AllItems;
+                var result = from item in items
+                             where item.Tags.Intersect(tags).Any()
+                             select item;
+                FileModel.DisplayItems = new ObservableCollection<FileItem>(result);
+            }
+            else
+            {
+                FileModel.DisplayItems = FileModel.AllItems;
+            }
         }
 
         private void Save(object parameter)
