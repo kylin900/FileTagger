@@ -119,12 +119,16 @@ namespace FileTagger.ViewModels
 
         private void DeleteFile()
         {
-            FileItem item = FileModel.SelectedItem;
-            if(item != null)
+            var items = FileModel.SelectedItems;
+            if(items.Count() > 0)
             {
                 if (MessageBox.Show("파일을 삭제하시겠습니까?", "파일 제거", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
                 {
-                    FileModel.AllItems.Remove(item);
+                    foreach(var item in items)
+                    {
+                        FileModel.AllItems.Remove(item);
+                        FileModel.DisplayItems.Remove(item);
+                    }                    
                     WriteXml();
                 }               
             }
@@ -132,11 +136,15 @@ namespace FileTagger.ViewModels
 
         private void Execute()
         {
-            if(FileModel.SelectedItem != null)
+            var items = FileModel.SelectedItems;
+            if (items.Count() > 0)
             {
                 if (File.Exists(FileModel.SelectedItem.FIleName))
                 {
-                    Process.Start(FileModel.SelectedItem.FIleName);
+                    foreach (var item in items)
+                    {
+                        Process.Start(item.FIleName);
+                    }                    
                 }
             }           
         }
@@ -167,6 +175,16 @@ namespace FileTagger.ViewModels
                 FileModel.SelectedItem.Description = (string)values[1];
                 WriteXml();
             }           
+        }
+
+        private void SelectAllFiles()
+        {
+            return;
+            var items = FileModel.DisplayItems;
+            foreach(var item in items)
+            {
+                item.IsSelected = true;
+            }
         }
 
         private void WriteXml()

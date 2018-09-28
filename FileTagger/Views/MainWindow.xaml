@@ -15,6 +15,19 @@
     <Window.DataContext>
         <VM:MainViewModel/>
     </Window.DataContext>
+    <Window.InputBindings>
+        <KeyBinding 
+            Modifiers="Ctrl" 
+            Key="S"
+            Command="{Binding SaveCommand}">
+            <KeyBinding.CommandParameter>
+                <MultiBinding Converter="{StaticResource FileDataConverter}">
+                    <Binding ElementName="Tag" Path="Text" Mode="OneWay "/>
+                    <Binding ElementName="Description" Path="Text" Mode="OneWay "/>
+                </MultiBinding>
+            </KeyBinding.CommandParameter>
+        </KeyBinding>
+    </Window.InputBindings>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="25"/>
@@ -53,11 +66,18 @@
                         Content="검색" 
                         Command="{Binding SearchCommand}"
                         CommandParameter="{Binding ElementName=Keywords, Path=Text}"/>
-                <ListBox 
+                <ListBox                                  
                     Grid.Row="2" 
                     Grid.ColumnSpan="2" 
+                    SelectionMode="Extended"
+                    VirtualizingStackPanel.IsVirtualizing="False"
                     ItemsSource="{Binding FileModel.DisplayItems, Mode=TwoWay}"
                     SelectedItem="{Binding FileModel.SelectedItem, Mode=TwoWay}">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
+                        </Style>
+                    </ListBox.ItemContainerStyle>
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Grid d:DesignWidth="372" d:DesignHeight="46">

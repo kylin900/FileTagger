@@ -39,21 +39,7 @@ namespace FileTagger.Models
                 SetProperty(ref _DisplayItems, value);
             }
         }
-
-        private int _SelectedIndex;
-        [XmlIgnore]
-        public int SelectedIndex
-        {
-            get
-            {
-                return _SelectedIndex;
-            }
-            set
-            {
-                SetProperty(ref _SelectedIndex, value);
-            }
-        }
-
+        
         private FileItem _SelectedItem;
         [XmlIgnore]
         public FileItem SelectedItem
@@ -66,6 +52,15 @@ namespace FileTagger.Models
             {
                 SetProperty(ref _SelectedItem, value);
             }
+        }
+                      
+        [XmlIgnore]
+        public ObservableCollection<FileItem> SelectedItems
+        {
+            get
+            {                
+                return new ObservableCollection<FileItem>(DisplayItems.Where(x => x.IsSelected));
+            }            
         }
 
         public FileModel()
