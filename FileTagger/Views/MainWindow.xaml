@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:FileTagger.Views"
         xmlns:VM="clr-namespace:FileTagger.ViewModels"
         xmlns:Converters="clr-namespace:FileTagger.Converters"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
         Title="FileTagger" Height="450" Width="800">
@@ -33,72 +34,117 @@
             <RowDefinition Height="25"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="LightGray">
             <Button Width="75" Content="파일 추가" Command="{Binding AddFileCommand}"/>
             <Button Width="75" Content="삭제" Command="{Binding DeleteFileCommand}"/>
             <Button Width="75" Content="실행" Command="{Binding ExecuteCommand}"/>
         </StackPanel>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="5*"/>
-                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="2*"/>
+                <ColumnDefinition Width="4*"/>
+                <ColumnDefinition Width="4*"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="75"/>
-                </Grid.ColumnDefinitions>
+            <Border BorderBrush="Gray" BorderThickness="0.5,0">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Border BorderBrush="Gray" BorderThickness="0,0,0,1">
+                        <Grid  Background="#4E87D4">
+                            <Label HorizontalAlignment="Center" FontSize="15" Foreground="White">태그</Label>
+                        </Grid>                        
+                    </Border>                    
+                    <ListBox Grid.Row="1" 
+                             Padding="7,0,0,0"
+                             BorderThickness="0"    
+                             SelectionMode="Multiple" 
+                             FontSize="14"
+                             ItemsSource="{Binding TagItems, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding SearchCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                        <ListBox.ItemContainerStyle>
+                            <Style TargetType="{x:Type ListBoxItem}">
+                                <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
+                            </Style>
+                        </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="30">                                    
+                                    <Label Content="{Binding Name}"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>                
+            </Border>
 
-                <TextBox x:Name="Keywords"
-                         Grid.Row="0">
+            <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="0.5,0">
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="138*"/>
+                        <ColumnDefinition Width="103*"/>
+                        <ColumnDefinition Width="75"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox x:Name="Keywords"
+                         Grid.Row="0" Grid.ColumnSpan="2">
                         <TextBox.InputBindings>
-                        <KeyBinding Key="Return" 
+                            <KeyBinding Key="Return" 
                                     Command="{Binding SearchCommand}"
                                     CommandParameter="{Binding ElementName=Keywords, Path=Text}" />
                         </TextBox.InputBindings>
-                </TextBox>
-                <Button Grid.Row="0" 
-                        Grid.Column="1" 
+                    </TextBox>
+                    <Button Grid.Row="0" 
+                        Grid.Column="2" 
                         Content="검색" 
                         Command="{Binding SearchCommand}"
                         CommandParameter="{Binding ElementName=Keywords, Path=Text}"/>
-                <ListBox                                  
-                    Grid.Row="2" 
-                    Grid.ColumnSpan="2" 
-                    SelectionMode="Extended"
-                    VirtualizingStackPanel.IsVirtualizing="False"
-                    ItemsSource="{Binding FileModel.DisplayItems, Mode=TwoWay}"
-                    SelectedItem="{Binding FileModel.SelectedItem, Mode=TwoWay}">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Grid d:DesignWidth="372" d:DesignHeight="46">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="25"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Image Source="{Binding Icon}"/>
-                                <Label Content="{Binding SafeFileName}" Grid.Column="1"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Grid>
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="25"/>
-                    <RowDefinition Height="5*"/>
-                    <RowDefinition Height="5*"/>
-                </Grid.RowDefinitions>
-                <Button 
+                    <ListBox                                  
+                        Grid.Row="1" 
+                        Grid.ColumnSpan="3"
+                        BorderThickness="0"
+                        SelectionMode="Extended"
+                        VirtualizingStackPanel.IsVirtualizing="False"                        
+                        ItemsSource="{Binding FileModel.DisplayItems, Mode=TwoWay}"
+                        SelectedItem="{Binding FileModel.SelectedItem, Mode=TwoWay}">
+                        <ListBox.ItemContainerStyle>
+                                <Style TargetType="{x:Type ListBoxItem}">
+                                    <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
+                                </Style>
+                            </ListBox.ItemContainerStyle>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Grid Height="30">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="25"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Image Source="{Binding Icon}"/>
+                                    <Label Content="{Binding SafeFileName}" Grid.Column="1"/>
+                                </Grid>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </Border>
+
+            <Border Grid.Column="2" BorderBrush="Gray" BorderThickness="0.5,0">
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="5*"/>
+                    </Grid.RowDefinitions>
+                    <Button 
                         Width="75" 
                         Content="저장" 
                         HorizontalAlignment="Right"
@@ -106,33 +152,34 @@
                         <Button.CommandParameter>
                             <MultiBinding Converter="{StaticResource FileDataConverter}">
                                 <Binding ElementName="Tag" Path="Text" Mode="OneWay "/>
-                                <Binding ElementName="Description" Path="Text" Mode="OneWay "/>                               
+                                <Binding ElementName="Description" Path="Text" Mode="OneWay "/>
                             </MultiBinding>
                         </Button.CommandParameter>
-                </Button>               
-                <GroupBox Header="태그"
+                    </Button>
+                    <GroupBox Header="태그"
                           Margin="3,3,3,3"
                           Grid.Row="1">
-                    <TextBox    
+                        <TextBox    
                         x:Name="Tag"      
                         Margin="5,5,5,5"
                         TextWrapping="Wrap"
                         AcceptsReturn="True"
                         VerticalScrollBarVisibility="Visible"
                         Text="{Binding FileModel.SelectedItem.Tags, Converter={StaticResource FileDataConverter}, Mode=OneWay}"/>
-                </GroupBox>
-                <GroupBox Header="설명"
+                    </GroupBox>
+                    <GroupBox Header="설명"
                           Margin="3,3,3,3"
                           Grid.Row="2">
-                    <TextBox    
+                        <TextBox    
                         x:Name="Description"
                         Margin="5,5,5,5"
                         TextWrapping="Wrap"
                         AcceptsReturn="True"
                         VerticalScrollBarVisibility="Visible"
                         Text="{Binding FileModel.SelectedItem.Description, Mode=OneWay}"/>
-                </GroupBox>
-            </Grid>
+                    </GroupBox>
+                </Grid>
+            </Border>
         </Grid>
     </Grid>
 </Window>

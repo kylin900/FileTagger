@@ -35,6 +35,27 @@ namespace FileTagger.ViewModels
             }
         }
 
+        private ObservableCollection<TagItem> _TagItems;
+        public ObservableCollection<TagItem> TagItems
+        {
+            get
+            {
+                return _TagItems;
+            }
+            set
+            {
+                SetProperty(ref _TagItems, value);
+            }
+        }
+
+        public ObservableCollection<TagItem> SelectedItags
+        {
+            get
+            {
+                return new ObservableCollection<TagItem>(TagItems.Where(x => x.IsSelected));
+            }
+        }
+
         public DelegateCommand AddFileCommand { get; set; }
         public DelegateCommand DeleteFileCommand { get; set; }
         public DelegateCommand ExecuteCommand { get; set; }
@@ -48,10 +69,10 @@ namespace FileTagger.ViewModels
             ExecuteCommand = new DelegateCommand(Execute);
             SaveCommand = new DelegateCommand<object>(Save);
             SearchCommand = new DelegateCommand<string>(Search);
-            LoadData();
+            InitData();
         }
 
-        private void LoadData()
+        private void InitData()
         {
             if (File.Exists(_XmlPath))
             {
@@ -72,6 +93,19 @@ namespace FileTagger.ViewModels
             foreach (var fileItem in FileModel.AllItems)
             {
                 fileItem.Icon = CreateIcon(fileItem.FIleName);
+            }
+
+            TagItems = new ObservableCollection<TagItem>();
+            List<string> list = new List<string>();
+
+            foreach(var item in FileModel.AllItems)
+            {
+                list.AddRange(item.Tags);
+            }
+            var tags = list.Distinct();
+            foreach(var item in tags)
+            {
+                TagItems.Add(new TagItem() { Name = item });
             }
         }
 
@@ -151,14 +185,29 @@ namespace FileTagger.ViewModels
 
         private void Search(string text)
         {
-            if(!string.IsNullOrEmpty(text))
+            List<string> tags = new List<string>();
+            foreach (TagItem item in SelectedItags)
             {
-                string[] tags = text.Trim().Split(' ');
+                tags.Add(item.Name);
+            }
+
+            if (tags.Count > 0)
+            {
                 var items = FileModel.AllItems;
                 var result = from item in items
-                             where item.Tags.Intersect(tags).Any()
-                             select item;
+                              where tags.All(x => item.Tags.Contains(x))
+                              select item;
+
+                if (!string.IsNullOrEmpty(text))
+                {
+                    result = result.Where(x => x.FIleName.Contains(text));
+                }
+                
                 FileModel.DisplayItems = new ObservableCollection<FileItem>(result);
+            }
+            else if(!string.IsNullOrEmpty(text))
+            {
+                FileModel.DisplayItems = new ObservableCollection<FileItem>(FileModel.AllItems.Where(x => x.SafeFileName.Contains(text)));
             }
             else
             {
@@ -175,16 +224,6 @@ namespace FileTagger.ViewModels
                 FileModel.SelectedItem.Description = (string)values[1];
                 WriteXml();
             }           
-        }
-
-        private void SelectAllFiles()
-        {
-            return;
-            var items = FileModel.DisplayItems;
-            foreach(var item in items)
-            {
-                item.IsSelected = true;
-            }
         }
 
         private void WriteXml()
