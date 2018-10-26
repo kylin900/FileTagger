@@ -116,6 +116,11 @@
                         VirtualizingStackPanel.IsVirtualizing="False"                        
                         ItemsSource="{Binding FileModel.DisplayItems, Mode=TwoWay}"
                         SelectedItem="{Binding FileModel.SelectedItem, Mode=TwoWay}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="MouseDoubleClick">
+                                <i:InvokeCommandAction Command="{Binding ExecuteCommand}"/>
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
                         <ListBox.ItemContainerStyle>
                                 <Style TargetType="{x:Type ListBoxItem}">
                                     <Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>

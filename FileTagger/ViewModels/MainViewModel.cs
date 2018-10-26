@@ -170,16 +170,10 @@ namespace FileTagger.ViewModels
 
         private void Execute()
         {
-            var items = FileModel.SelectedItems;
-            if (items.Count() > 0)
+            var item = FileModel.SelectedItem;
+            if (item != null)
             {
-                if (File.Exists(FileModel.SelectedItem.FIleName))
-                {
-                    foreach (var item in items)
-                    {
-                        Process.Start(item.FIleName);
-                    }                    
-                }
+                Process.Start(item.FIleName);
             }           
         }
 
@@ -223,6 +217,8 @@ namespace FileTagger.ViewModels
                 FileModel.SelectedItem.Tags = (List<string>)values[0];
                 FileModel.SelectedItem.Description = (string)values[1];
                 WriteXml();
+
+                MessageBox.Show("저장되었습니다.");
             }           
         }
 
