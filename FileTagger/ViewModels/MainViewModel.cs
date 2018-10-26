@@ -107,6 +107,11 @@ namespace FileTagger.ViewModels
             {
                 TagItems.Add(new TagItem() { Name = item });
             }
+
+            if (FileModel.AllItems.ToList().Exists(x => x.Tags.Count == 0))
+            {
+                TagItems.Add(new TagItem() { Name = "미분류" });
+            }
         }
 
         private void AddFile()
@@ -191,6 +196,19 @@ namespace FileTagger.ViewModels
                 var result = from item in items
                               where tags.All(x => item.Tags.Contains(x))
                               select item;
+
+                if(tags.Exists(x => x == "미분류"))
+                {
+                    var unclassifiedItem = FileModel.AllItems.Where(x => x.Tags.Count == 0);
+                    if(result.Count() == 0)
+                    {
+                        result = unclassifiedItem;
+                    }
+                    else
+                    {
+                        result.Concat(unclassifiedItem);
+                    }
+                }
 
                 if (!string.IsNullOrEmpty(text))
                 {
