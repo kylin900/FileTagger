@@ -16,7 +16,9 @@ namespace FileTagger.Converters
             string tags = (string)value[0];       
 
             string[] stringSeparators = new string[] { "\r\n" };
-            value[0] = new List<string>(tags.Replace(" ","").Split(stringSeparators, StringSplitOptions.None));
+            List<string> list = new List<string>(tags.Split(stringSeparators, StringSplitOptions.None));
+            list.RemoveAll(x => string.IsNullOrEmpty(x) || string.IsNullOrWhiteSpace(x));
+            value[0] = list;
             return value;
         }
 
