@@ -56,7 +56,30 @@ namespace FileTagger.ViewModels
             }
         }
 
+        private FileItem _SelectedItem;
+        public FileItem SelectedItem
+        {
+            get
+            {
+                return _SelectedItem;
+            }
+            set
+            {
+                ExecuteCommand.RaiseCanExecuteChanged();
+                SetProperty(ref _SelectedItem, value);
+            }
+        }
+
+        public ObservableCollection<FileItem> SelectedItems
+        {
+            get
+            {                
+                return new ObservableCollection<FileItem>(FileModel.DisplayItems.Where(x => x.IsSelected));
+            }
+        }
+
         public DelegateCommand AddFileCommand { get; set; }
+        public DelegateCommand ChangeSelectedItemsCommand { get; set; }
         public DelegateCommand DeleteFileCommand { get; set; }
         public DelegateCommand ExecuteCommand { get; set; }
         public DelegateCommand<object> SaveCommand { get; set; }
@@ -65,11 +88,22 @@ namespace FileTagger.ViewModels
         public MainViewModel()
         {            
             AddFileCommand = new DelegateCommand(AddFile);
-            DeleteFileCommand = new DelegateCommand(DeleteFile);
-            ExecuteCommand = new DelegateCommand(Execute);
+            ChangeSelectedItemsCommand = new DelegateCommand(OnSelectedItemsChange);
+            DeleteFileCommand = new DelegateCommand(DeleteFile, CanDeleteFile);
+            ExecuteCommand = new DelegateCommand(Execute, CanExecute);
             SaveCommand = new DelegateCommand<object>(Save);
             SearchCommand = new DelegateCommand<string>(Search);
             InitData();
+        }
+
+        private bool CanExecute()
+        {
+            return SelectedItem != null ? true : false;
+        }
+
+        private void OnSelectedItemsChange()
+        {
+            DeleteFileCommand.RaiseCanExecuteChanged();
         }
 
         private void InitData()
@@ -156,9 +190,15 @@ namespace FileTagger.ViewModels
             return bitmap;
         }
 
+        private bool CanDeleteFile()
+        {            
+            var items = SelectedItems;           
+            return items.Count() > 0 ? true : false;
+        }
+
         private void DeleteFile()
         {
-            var items = FileModel.SelectedItems;
+            var items = SelectedItems;
             if(items.Count() > 0)
             {
                 if (MessageBox.Show("파일을 삭제하시겠습니까?", "파일 제거", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
@@ -175,11 +215,7 @@ namespace FileTagger.ViewModels
 
         private void Execute()
         {
-            var item = FileModel.SelectedItem;
-            if (item != null)
-            {
-                Process.Start(item.FIleName);
-            }           
+            Process.Start(SelectedItem.FIleName);
         }
 
         private void Search(string text)
@@ -229,11 +265,11 @@ namespace FileTagger.ViewModels
 
         private void Save(object parameter)
         {
-            if(FileModel.SelectedItem != null)
+            if(SelectedItem != null)
             {
                 var values = (object[])parameter;
-                FileModel.SelectedItem.Tags = (List<string>)values[0];
-                FileModel.SelectedItem.Description = (string)values[1];
+                SelectedItem.Tags = (List<string>)values[0];
+                SelectedItem.Description = (string)values[1];
                 WriteXml();
 
                 MessageBox.Show("저장되었습니다.");

@@ -39,30 +39,7 @@ namespace FileTagger.Models
                 SetProperty(ref _DisplayItems, value);
             }
         }
-        
-        private FileItem _SelectedItem;
-        [XmlIgnore]
-        public FileItem SelectedItem
-        {
-            get
-            {
-                return _SelectedItem;
-            }
-            set
-            {
-                SetProperty(ref _SelectedItem, value);
-            }
-        }
-                      
-        [XmlIgnore]
-        public ObservableCollection<FileItem> SelectedItems
-        {
-            get
-            {                
-                return new ObservableCollection<FileItem>(DisplayItems.Where(x => x.IsSelected));
-            }            
-        }
-
+                
         public FileModel()
         {
             AllItems = new ObservableCollection<FileItem>();

@@ -115,10 +115,13 @@
                         SelectionMode="Extended"
                         VirtualizingStackPanel.IsVirtualizing="False"                        
                         ItemsSource="{Binding FileModel.DisplayItems, Mode=TwoWay}"
-                        SelectedItem="{Binding FileModel.SelectedItem, Mode=TwoWay}">
+                        SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
                         <i:Interaction.Triggers>
                             <i:EventTrigger EventName="MouseDoubleClick">
                                 <i:InvokeCommandAction Command="{Binding ExecuteCommand}"/>
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="SelectionChanged">
+                                <i:InvokeCommandAction Command="{Binding ChangeSelectedItemsCommand}"/>
                             </i:EventTrigger>
                         </i:Interaction.Triggers>
                         <ListBox.ItemContainerStyle>
@@ -170,7 +173,7 @@
                         TextWrapping="Wrap"
                         AcceptsReturn="True"
                         VerticalScrollBarVisibility="Visible"
-                        Text="{Binding FileModel.SelectedItem.Tags, Converter={StaticResource FileDataConverter}, Mode=OneWay}"/>
+                        Text="{Binding SelectedItem.Tags, Converter={StaticResource FileDataConverter}, Mode=OneWay}"/>
                     </GroupBox>
                     <GroupBox Header="설명"
                           Margin="3,3,3,3"
@@ -181,7 +184,7 @@
                         TextWrapping="Wrap"
                         AcceptsReturn="True"
                         VerticalScrollBarVisibility="Visible"
-                        Text="{Binding FileModel.SelectedItem.Description, Mode=OneWay}"/>
+                        Text="{Binding SelectedItem.Description, Mode=OneWay}"/>
                     </GroupBox>
                 </Grid>
             </Border>
